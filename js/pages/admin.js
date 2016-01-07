@@ -1,8 +1,5 @@
-//todo...
-// need to make the text on the left column templated
+//the internal one is a report not dashboard. probably break into own file
 // for the internal report, use different JRS credentials based on who is logged in.
-
-// can probably make this super re-usable as the html just has a container in it. the model will be the same for most screens
 
 
 
@@ -32,158 +29,177 @@
 
 var pageConfig = {};
 
-
-pageConfig.inventory = {
-        dashboard: "/public/Samples/FreshDelivery_Demo/Admin_Inventory_Dashboard",
-        dashboardParams: {
-            Country: ["USA", "Canada", "Mexico"]
-        }, 
-        filters: [
-            {
-                paramId: "Country", 
-                allName: "All Countries"
-                //options: (function(){return pageConfig.dashboardParams.Country})()
-            }
-        ] 
+pageConfig.inventory = {    
+	dashboard: "/public/Samples/FreshDelivery_Demo/Admin_Inventory_Dashboard",
+	dashboardParams: {
+		Country: ["USA", "Canada", "Mexico"]
+	},
+	filters: [{
+		paramId: "Country",
+		allName: "All Countries"
+			//options: (function(){return pageConfig.dashboardParams.Country})()
+	}],
+    viewName:'Inventory View', 
+    viewDescription:'View up to date internal metrics', 
+    chartTitle: ''
+  
 };
 
 pageConfig.payroll = {
-        dashboard: "/public/Samples/FreshDelivery_Demo/Employee_Dashboard",
-        dashboardParams: {
-            StoreType: ["Deluxe Supermarket", "Gourmet Supermarket", "HeadQuarters", "Mid-Size Grocery", "Small Grocery", "Supermarket"]
-        }, 
-        filters: [
-            {
-                paramId: "StoreType", 
-                allName: "All Store Types",
-            }
-        ] 
+	dashboard: "/public/Samples/FreshDelivery_Demo/Employee_Dashboard",
+	dashboardParams: {
+		StoreType: ["Deluxe Supermarket", "Gourmet Supermarket", "HeadQuarters", "Mid-Size Grocery", "Small Grocery", "Supermarket"]
+	},
+	filters: [{
+		paramId: "StoreType",
+		allName: "All Store Types",
+	}], 
+    viewName:'Employee Payroll', 
+    viewDescription:'Payroll with overtime paid and vacation accrued', 
+    chartTitle: ''
 };
 
 pageConfig.blank = {
-        dashboard: "/public/Samples/FreshDelivery_Demo/22.0_Blank_Starting_Dashboard",
-        dashboardParams: {
-            Country: ["USA", "Canada", "Mexico"]
-        }, 
-        filters: [
-            {
-                paramId: "Country", 
-                allName: "All Countries"
-                //options: (function(){return pageConfig.dashboardParams.Country})()
-            }
-        ] 
+	dashboard: "/public/Samples/FreshDelivery_Demo/22.0_Blank_Starting_Dashboard",
+	dashboardParams: {
+		Country: ["USA", "Canada", "Mexico"]
+	},
+	filters: [{
+		paramId: "Country",
+		allName: "All Countries"
+			//options: (function(){return pageConfig.dashboardParams.Country})()
+	}], 
+    viewName:'New Dashboard View', 
+    viewDescription:'Begin on "Blank Starting Dashboard in repository', 
+    chartTitle: ''
 };
 
 pageConfig.internal = {
-        dashboard: "/public/Samples/FreshDelivery_Demo/FreshDelivery_Internal_Report"
+	dashboard: "/public/Samples/FreshDelivery_Demo/FreshDelivery_Internal_Report",
+    filters: [],
+    dashboardParams: {}, 
+    viewName:'Internal Store Management', 
+    viewDescription:'These metrics change based on the manager/admin who is logged in.', 
+    chartTitle: ''
 };
 
 
-
-var hash = location.search.split('?')[1]; 
+var hash = location.search.split('?')[1];
 pageConfig = pageConfig[hash] || pageConfig.inventory;
 
 
 
 //load the config and get the script for the configured server instance
-$.getJSON('./config/config.json', function(data){
-    $.getScript(data.visualizeJS, function(){
-        initPage(data.jrsConfig);
-    });
+$.getJSON('./config/config.json', function(data) {
+	$.getScript(data.visualizeJS, function() {
+		initPage(data.jrsConfig);
+	});
 });
 
 //connect to Jaspersoft BI server and load the dashboard
-function initPage(jrsConfig){
+function initPage(jrsConfig) {
 
-    visualize({auth:jrsConfig.auth}, function(v){
-        loadDashboard(v);
-    });
-};
+	visualize({
+		auth: jrsConfig.auth
+	}, function(v) {
+		loadDashboard(v);
+	});
+}
 
 //load the dashboard 
-function loadDashboard(v){
-    
-    var dashboard = v.dashboard({
-        resource: pageConfig.dashboard,
-        container: "#container",
-        error: handleError,
-        params: pageConfig.dashboardParams,
-        success: function() {
-            $("button").prop("disabled", false);
-        }
-    });
+function loadDashboard(v) {
 
-    //attach to the global scope
-    window.dashboard = dashboard;
-};
+	var dashboard = v.dashboard({
+		resource: pageConfig.dashboard,
+		container: "#container",
+		error: handleError,
+		params: pageConfig.dashboardParams,
+		success: function() {
+			$("button").prop("disabled", false);
+		}
+	});
 
-function buildParams(){
+	//attach to the global scope
+	window.dashboard = dashboard;
+}
 
-    //placeholder for the params object
-    var params = {};
+function buildParams() {
 
-    //interate over all select lists and build the params object
-    $("[data-paramId]").each(function() {
-        var paramName = $(this).attr('data-paramId'),
-            selectedVal = $(this).val(),
-            allVals = [];
+	//placeholder for the params object
+	var params = {};
 
-        // get a list of all options in the select so we can handle the "all" case
-        $(this).children('option').each(function(){
-            if($(this).attr('value') !== 'all'){
-                allVals.push($(this).attr('value'));
-            }  
-        });
+	//interate over all select lists and build the params object
+	$("[data-paramId]").each(function() {
+		var paramName = $(this).attr('data-paramId'),
+			selectedVal = $(this).val(),
+			allVals = [];
 
-        //add the parameter to the params object
-        params[paramName] = selectedVal === 'all' ? allVals : [selectedVal]; 
+		// get a list of all options in the select so we can handle the "all" case
+		$(this).children('option').each(function() {
+			if ($(this).attr('value') !== 'all') {
+				allVals.push($(this).attr('value'));
+			}
+		});
 
-    });
+		//add the parameter to the params object
+		params[paramName] = selectedVal === 'all' ? allVals : [selectedVal];
 
-    return params;
-        
-};
+	});
+
+	return params;
+
+}
 
 //re-load the dashboard apply the selected filters
-function updateFilters(dashboard){
+function updateFilters(dashboard) {
 
-    //build the parameters object
-    var params = buildParams();
+	//build the parameters object
+	var params = buildParams();
 
-    //reload the dashboard and re-enable the button
-    dashboard.params(params).run()
-        .fail(handleError)
-        .always(function() { 
-            $("button").prop("disabled", false); 
-        });    
+	//reload the dashboard and re-enable the button
+	dashboard.params(params).run()
+		.fail(handleError)
+		.always(function() {
+			$("button").prop("disabled", false);
+		});
 }
 
 //render all the filtering options specified in the page configuration
-function renderFilters(){
-    $.get('./partials/dropdown.html', function(template){
-        var template = Handlebars.compile(template);
-
-        for(var i=0,l=pageConfig.filters.length;i<l;i++){
-            var templateData = pageConfig.filters[i];
-            templateData.options = pageConfig.dashboardParams[pageConfig.filters[i].paramId];
-            $('#filters').append(template(templateData));
-        }
-    });
+function renderFilters() {
+	$.get('./partials/dropdown.html', function(tmpl) {
+		var template = Handlebars.compile(tmpl);
+		for (var i = 0, l = pageConfig.filters.length; i < l; i++) {
+			var templateData = pageConfig.filters[i];
+			templateData.options = pageConfig.dashboardParams[pageConfig.filters[i].paramId];
+			$('#filters').append(template(templateData));
+		}
+	});
 }
 
 function handleError(e) {
-    alert(e);
+	alert(e);
 }
 
 
-$(function(){
-    //render the filtering options
-    renderFilters();
+$(function() {
 
-    //attach a listener for updating the filters
-    $("button").on('click', function(){
-        $("button").prop("disabled", true);
-        updateFilters(window.dashboard);
+	//attach a listener for updating the filters
+	$("button").on('click', function() {
+		$("button").prop("disabled", true);
+		updateFilters(window.dashboard);
+	});
+
+    //render the left side bar 
+    $.get('./partials/admin-left-panel.html', function(tmpl) {
+        var templateData = {
+           viewName: pageConfig.viewName, 
+           viewDescription:pageConfig.viewDescription
+        };
+        var template = Handlebars.compile(tmpl);
+        $('#leftPanel').html(template(templateData));
+
+        //render the filtering options
+        renderFilters();
     });
-});
 
+});

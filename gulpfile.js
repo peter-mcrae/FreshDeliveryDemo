@@ -22,7 +22,7 @@ gulp.task('js-lint', function () {
 /*
  * Lint your JavaScript
  */
-gulp.task('js-lint', function () {
+gulp.task('js-lint-1', function () {
     return gulp.src(paths.script_main)
         .pipe($.jshint())
         .pipe($.jshint.reporter(jshintStylish));
@@ -43,7 +43,7 @@ gulp.task('beautify-js', ['js-lint'], function () {
 /*
  * Beautify your JavaScript
  */
-gulp.task('beautify-js', ['js-lint'], function () {
+gulp.task('beautify-js-1', ['js-lint-1'], function () {
     return gulp.src(paths.script_main)
         .pipe($.jsbeautifier({
             config: '.jsbeautifyrc',
@@ -52,3 +52,14 @@ gulp.task('beautify-js', ['js-lint'], function () {
         .pipe(gulp.dest('./js/'));
 });
 
+/*
+ * Watchers
+ */
+gulp.task('watch', function () {
+    gulp.watch(paths.scripts, ['beautify-js']);
+    gulp.watch(paths.css, ['beautify-js-1']);
+    gulp.watch(paths.scripts, ['js-lint']);
+    gulp.watch(paths.css, ['js-lint-1']);
+});
+
+gulp.task('default',['beautify-js','beautify-js-1']);

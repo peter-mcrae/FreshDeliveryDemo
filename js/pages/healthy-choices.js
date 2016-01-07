@@ -1,46 +1,47 @@
-
 var pageConfig = {
 	masterReport: {
 		uri: '/public/Samples/FreshDelivery_Demo/HealthyChoiceProducts',
 		container: '#healthy-choices'
 	},
-	params: {}, 
+	params: {},
 	supplyMap: {
-		'1':'None',
-		'2':'Limited',
-		'3':'Good',
-		'4':'High'
+		'1': 'None',
+		'2': 'Limited',
+		'3': 'Good',
+		'4': 'High'
 	}
-}
+};
 
 //load the config and get the script for the configured server instance
-$.getJSON('./config/config.json', function(data){
-    $.getScript(data.visualizeJS, function(){
-        initPage(data.jrsConfig);
-    });
+$.getJSON('./config/config.json', function(data) {
+	$.getScript(data.visualizeJS, function() {
+		initPage(data.jrsConfig);
+	});
 });
 
-function initPage(jrsConfig){
-	visualize({auth:jrsConfig.auth}, function(v){
-        loadDashboard(v);
-    });
+function initPage(jrsConfig) {
+	visualize({
+		auth: jrsConfig.auth
+	}, function(v) {
+		loadDashboard(v);
+	});
 }
 
-function loadDashboard(v){
-	window.masterReport =  v.report({
+function loadDashboard(v) {
+	window.masterReport = v.report({
 		resource: pageConfig.masterReport.uri,
 		container: pageConfig.masterReport.container,
 		linkOptions: {
 			events: {
-				"click":function(evt, link){
-					var l=link.parameters;
+				"click": function(evt, link) {
+					var l = link.parameters;
 					$('#ImageLink').html('<img src="img/products/' + (l.product_name) + '.jpg" height="200px">');
 					$('#ProductName1').html(l.product_name);
-					$('#ProductNameSimple').html(l.product_name.replace(/Hermanos/,'').replace(/Ebony/, ''));
+					$('#ProductNameSimple').html(l.product_name.replace(/Hermanos/, '').replace(/Ebony/, ''));
 					$('#Group').html(l.product_group);
 					$('#AvailSupply').html(pageConfig.supplyMap[l.total_supply] || 'N/A');
 					$('#Price').html('$ ' + Number(l.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-					$('#UnitsCase').html(l.total_units_case);				
+					$('#UnitsCase').html(l.total_units_case);
 				}
 			}
 		},
@@ -51,25 +52,25 @@ function loadDashboard(v){
 }
 
 function setFilter(paramId, paramValue) {
-    pageConfig.params[paramId] = [paramValue];
-    refreshMaster();
+	pageConfig.params[paramId] = [paramValue];
+	refreshMaster();
 }
-		
+
 function resetFilters() {
-    pageConfig.params = {};
-    refreshMaster();
+	pageConfig.params = {};
+	refreshMaster();
 }
 
-function refreshMaster(){
-	 window.masterReport.params(pageConfig.params).run();	
+function refreshMaster() {
+	window.masterReport.params(pageConfig.params).run();
 }
 
-$(function(){
-	$("#filterTen").on('click', function(){
+$(function() {
+	$("#filterTen").on('click', function() {
 		limitResults(10);
-	});	
+	});
 
-	$("#filterReset").on('click', function(){
+	$("#filterReset").on('click', function() {
 		resetFilters();
 	});
 });
