@@ -1,0 +1,15 @@
+{
+	"visualizeJS" : "http://172.16.17.130/jasperserver-pro/client/visualize.js",
+	"jrsHostname": "http://172.16.17.130/jasperserver-pro/flow.html", 
+	"users":{		
+		"manager": {"username": "californiaUser" , "password": "californiaUser"}, 
+		"admin":   {"username": "californiaUser" , "password": "californiaUser"}
+	},
+	"jrsConfig": {
+	    "auth": {
+	        "name": "jasperadmin",
+	        "password": "jasperadmin",
+	        "organization": "organization_1"
+	    }
+	}
+}
