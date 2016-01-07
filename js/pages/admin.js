@@ -80,7 +80,7 @@ pageConfig.internal = {
 
 
 
-var hash = location.hash.split('#')[1]; 
+var hash = location.search.split('?')[1]; 
 pageConfig = pageConfig[hash] || pageConfig.inventory;
 
 

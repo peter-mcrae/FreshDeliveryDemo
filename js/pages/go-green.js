@@ -76,9 +76,7 @@ function loadDashboard(v){
         linkOptions: {
             events: {
                 "click"  : function(evt, link){
-                	pageConfig.params = {};
-                	pageConfig.params.city_name = [link.parameters.city_name];
-                    refreshMaster();
+                	changeChartCity(link.parameters.city_name);
                 }
             }
         },
@@ -88,9 +86,11 @@ function loadDashboard(v){
     });
 }
 
-function limitResults(num){
-	pageConfig.params.Limiter = ['limit ' + num];
-	refreshSlave();
+function changeChartCity(city){
+	pageConfig.params = {};
+    pageConfig.params.city_name = [city];
+    refreshMaster();
+    refreshSlave();
 }
 
 function resetFilters(){

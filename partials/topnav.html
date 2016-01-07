@@ -22,9 +22,9 @@
                     Our Products <span class="caret"></span>
                   </a>
                   <ul class="dropdown-menu">
-                      <li><a onclick="document.location= topurl;" style="cursor: pointer;">Top Sellers</a></li>
-                      <li><a onclick="document.location= healthyurl;" style="cursor: pointer;">Healthy Choices</a></li>
-                      <li><a onclick="document.location= greenurl;" style="cursor: pointer;">Go Green</a></li>
+                      <li><a href="./top-sellers.html" style="cursor: pointer;">Top Sellers</a></li>
+                      <li><a href="./healthy-choices.html" style="cursor: pointer;">Healthy Choices</a></li>
+                      <li><a href="./go-green.html" style="cursor: pointer;">Go Green</a></li>
                   </ul>
               </li>
               {{#if admin}} 
@@ -33,11 +33,11 @@
                       Admin <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="./admin.html#payroll" style="cursor: pointer;">Employee Payroll</a></li>
-                    	  <li><a href="./admin#internal" style="cursor: pointer;">Manager Metrics</a></li>
-                        <li><a href="./admin.html#inventory" style="cursor: pointer;">Inventory Dashboard</a></li>
+                        <li><a href="./admin.html?payroll" style="cursor: pointer;">Employee Payroll</a></li>
+                    	  <li><a href="./admin.html?internal" style="cursor: pointer;">Manager Metrics</a></li>
+                        <li><a href="./admin.html?inventory" style="cursor: pointer;">Inventory Dashboard</a></li>
                         <li><a href="./admin-shipping.html" style="cursor: pointer;">Create/View</a></li>
-                        <li><a href="./admin.html#blank;" style="cursor: pointer;">New Dashboard (blank)</a></li>
+                        <li><a href="./admin.html?blank" style="cursor: pointer;">New Dashboard (blank)</a></li>
                     </ul>
                 </li>
               {{/if}}
@@ -46,6 +46,11 @@
             <ul class="nav navbar-nav navbar-right">
              <!-- Admin Logout link -->
              
+            <li class="">
+            {{#if loggedIn}}
+              <a>Welcome, {{userName}} </a>
+            {{/if}}
+            </li> 
       		  <li class="">
               {{#if loggedIn}}
                <a href="#" id="logout">Logout</a>

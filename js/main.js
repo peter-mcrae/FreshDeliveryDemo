@@ -13,7 +13,7 @@ app.validateUser = function(user, pass){
 };
 
 app.getUserRole = function(user){
-	return true;
+	return 'admin';
 };
 
 app.login = function(user, pass){
@@ -22,6 +22,8 @@ app.login = function(user, pass){
 		
 		//get the users role 
 		sessionStorage.userRole = this.getUserRole(user);
+		sessionStorage.userName = user;
+		sessionStorage.loggedIn = true;
 
 		//go to the post authentication page
 		window.location = "./admin.html"
@@ -49,7 +51,7 @@ $(function(){
 	
 	//load the top navigation
 	$.get('./partials/topnav.html', function(template){
-		var userData = {loggedIn:false, admin:false};
+		var userData = {loggedIn:sessionStorage.loggedIn || false, admin:sessionStorage.userRole === 'admin', userName: sessionStorage.userName};
 		var template = Handlebars.compile(template);
     	$('header').html(template(userData));
 	});
