@@ -1,10 +1,15 @@
+//the internal one is a report not dashboard. probably break into own file
+// for the internal report, use different JRS credentials based on who is logged in.
+
+
+
 /*
  * ========================================================================
- * shipping.js : v0.8.0
+ * admin.js : v0.8.0
  *
  * ========================================================================
  * Copyright 2014
- * Authors: Daniel Petzold, Mariano Luna
+ * Authors: Daniel Petzold
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft Inc., the following license terms apply:
  *
@@ -21,57 +26,52 @@
  * ========================================================================
  */
 
-var pageConfig = {
-	"pages": [{
-			"label": "Create Adhoc",
-			"url": "?_flowId=adhocFlow&resource=/public/Samples/FreshDelivery_Demo/New_Admin_Ad_Hoc_View&theme=embedded_scdp"
-		}, {
-			"label": "Library",
-			"url": "?_flowId=searchFlow&mode=library&theme=embedded_scdp"
-		}, {
-			"label": "Report List",
-			"url": "?_flowId=searchFlow&mode=search&filterId=resourceTypeFilter&filterOption=resourceTypeFilter-reports&theme=embedded_scdp"
-		}, {
-			"label": "Home",
-			"url": "?_flowId=homeFlow&theme=embedded_scdp"
-		}
 
-	]
+var pageConfig = {
+	type: 'report',
+	dashboard: "/public/Samples/FreshDelivery_Demo/FreshDelivery_Internal_Report",
+	filters: [],
+	dashboardParams: {},
+	viewName: 'Internal Store Management',
+	viewDescription: 'These metrics change based on the manager/admin who is logged in.',
+	chartTitle: ''
 };
 
 
 //load the config and get the script for the configured server instance
 $.getJSON('./config/config.json', function(data) {
 	$.getScript(data.visualizeJS, function() {
-		initPage(data.jrsConfig, data.jrsHostname);
+		initPage(data.jrsConfig);
 	});
 });
 
-function initPage(jrsConfig, hostname) {
+//connect to Jaspersoft BI server and load the dashboard
+function initPage(jrsConfig) {
 	visualize({
-		auth: jrsConfig.auth
+		auth: JSON.parse(sessionStorage.jrsConfig || '{}').auth //use the credentials of the logged in user
 	}, function(v) {
-
-		$(function() {
-
-			//add all of the menu options
-			for (var i = 0, l = pageConfig.pages.length; i < l; i++) {
-				$('#mySelect').append($("<option/>", {
-					value: hostname + pageConfig.pages[i].url,
-					text: pageConfig.pages[i].label
-				}));
-			}
-
-			//embed the initial iframe
-			$('<iframe>', {
-				src: hostname + pageConfig.pages[0].url,
-				id: 'myFrame',
-				width: 1160,
-				height: 600,
-				frameborder: 0,
-				scrolling: 'no'
-			}).appendTo('#adhoc');
-		});
-
+		loadReport(v);
 	});
+}
+
+
+//load the dashboard 
+function loadReport(v) {
+
+	var dashboard = v.report({
+		resource: pageConfig.dashboard,
+		container: "#container",
+		error: handleError,
+		params: pageConfig.dashboardParams,
+		success: function() {
+			$("button").prop("disabled", false);
+		}
+	});
+
+	//attach to the global scope
+	window.dashboard = dashboard;
+}
+
+function handleError(err) {
+	console.log(err);
 }

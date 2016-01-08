@@ -26,30 +26,25 @@
     <body>
         <header></header>
         <!-- START PAGE CONATAINER -->
-        <article class="healthy-choices interior-article">
+        <article class="top-sellers interior-article">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-2 col-lg-2 col-xl-2 aux-col">
-                        <img src="img/interior-header-produce.jpg" width="100%" height="220" alt="Healthy Choices" class="img-responsive" />
+                    <div class="col-md-3 col-lg-3 col-xl-3 aux-col">
+                        <img src="img/interior-header-van.jpg" width="100%" height="220" alt="Top Sellers" class="img-responsive" />
                         <div class="col-text">
-                            <h2>Create / View Reports</h2>
+                            <h2>Internal Store Management</h2>
                             <br>
-                            <p class="lead">Explore data to create a new ad hoc report</p>
+                            <p class="lead">These metrics change based on the manager/admin who is logged in.</p>
                         </div>
-                        <br>
-                        <br>
-                        <select id="mySelect" class="form-control shipping-select">
-                            <option>Select your view </option>
-                        </select>
                     </div>
-                    <div style="background-color:#FFF" class="col-md-10 main-col main-col-interior">
-                        <h2 class="chart-header shipping-header">Create / browse existing data and reports</h2>
-                        <!-- My HTTP API Frame-->
-                        <div id="adhoc"></div>
+
+                    <div class="col-md-8 main-col col-top-sellers">
+                        <h2 class="chart-header">Manager sales and cost metrics by store</h2>
                         <br>
+                        <br>
+                        <div id="container" class="chart-container internal" align="center"></div>
                     </div>
                 </div>
-            </div>
             </div>
         </article>
         <!-- END PAGE CONATAINER -->
@@ -61,7 +56,7 @@
         <script src="js/vendor/bootstrap.min.js"></script>
         <script src="js/vendor/handlebars.min.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/pages/admin-shipping.js"></script>
+        <script src="js/pages/admin-internal-manager.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

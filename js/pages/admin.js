@@ -29,7 +29,8 @@
 
 var pageConfig = {};
 
-pageConfig.inventory = {    
+pageConfig.inventory = {
+	type: 'dashboard',
 	dashboard: "/public/Samples/FreshDelivery_Demo/Admin_Inventory_Dashboard",
 	dashboardParams: {
 		Country: ["USA", "Canada", "Mexico"]
@@ -39,13 +40,14 @@ pageConfig.inventory = {
 		allName: "All Countries"
 			//options: (function(){return pageConfig.dashboardParams.Country})()
 	}],
-    viewName:'Inventory View', 
-    viewDescription:'View up to date internal metrics', 
-    chartTitle: ''
-  
+	viewName: 'Inventory View',
+	viewDescription: 'View up to date internal metrics',
+	chartTitle: ''
+
 };
 
 pageConfig.payroll = {
+	type: 'dashboard',
 	dashboard: "/public/Samples/FreshDelivery_Demo/Employee_Dashboard",
 	dashboardParams: {
 		StoreType: ["Deluxe Supermarket", "Gourmet Supermarket", "HeadQuarters", "Mid-Size Grocery", "Small Grocery", "Supermarket"]
@@ -53,13 +55,14 @@ pageConfig.payroll = {
 	filters: [{
 		paramId: "StoreType",
 		allName: "All Store Types",
-	}], 
-    viewName:'Employee Payroll', 
-    viewDescription:'Payroll with overtime paid and vacation accrued', 
-    chartTitle: ''
+	}],
+	viewName: 'Employee Payroll',
+	viewDescription: 'Payroll with overtime paid and vacation accrued',
+	chartTitle: ''
 };
 
 pageConfig.blank = {
+	type: 'dashboard',
 	dashboard: "/public/Samples/FreshDelivery_Demo/22.0_Blank_Starting_Dashboard",
 	dashboardParams: {
 		Country: ["USA", "Canada", "Mexico"]
@@ -68,19 +71,10 @@ pageConfig.blank = {
 		paramId: "Country",
 		allName: "All Countries"
 			//options: (function(){return pageConfig.dashboardParams.Country})()
-	}], 
-    viewName:'New Dashboard View', 
-    viewDescription:'Begin on "Blank Starting Dashboard in repository', 
-    chartTitle: ''
-};
-
-pageConfig.internal = {
-	dashboard: "/public/Samples/FreshDelivery_Demo/FreshDelivery_Internal_Report",
-    filters: [],
-    dashboardParams: {}, 
-    viewName:'Internal Store Management', 
-    viewDescription:'These metrics change based on the manager/admin who is logged in.', 
-    chartTitle: ''
+	}],
+	viewName: 'New Dashboard View',
+	viewDescription: 'Begin on "Blank Starting Dashboard in repository',
+	chartTitle: ''
 };
 
 
@@ -98,11 +92,10 @@ $.getJSON('./config/config.json', function(data) {
 
 //connect to Jaspersoft BI server and load the dashboard
 function initPage(jrsConfig) {
-
 	visualize({
 		auth: jrsConfig.auth
 	}, function(v) {
-		loadDashboard(v);
+		pageConfig.type === 'report' ? loadReport(v) : loadDashboard(v);
 	});
 }
 
@@ -122,6 +115,24 @@ function loadDashboard(v) {
 	//attach to the global scope
 	window.dashboard = dashboard;
 }
+
+//load the dashboard 
+function loadReport(v) {
+
+	var dashboard = v.report({
+		resource: pageConfig.dashboard,
+		container: "#container",
+		error: handleError,
+		params: pageConfig.dashboardParams,
+		success: function() {
+			$("button").prop("disabled", false);
+		}
+	});
+
+	//attach to the global scope
+	window.dashboard = dashboard;
+}
+
 
 function buildParams() {
 
@@ -147,7 +158,6 @@ function buildParams() {
 	});
 
 	return params;
-
 }
 
 //re-load the dashboard apply the selected filters
@@ -189,17 +199,17 @@ $(function() {
 		updateFilters(window.dashboard);
 	});
 
-    //render the left side bar 
-    $.get('./partials/admin-left-panel.html', function(tmpl) {
-        var templateData = {
-           viewName: pageConfig.viewName, 
-           viewDescription:pageConfig.viewDescription
-        };
-        var template = Handlebars.compile(tmpl);
-        $('#leftPanel').html(template(templateData));
+	//render the left side bar 
+	$.get('./partials/admin-left-panel.html', function(tmpl) {
+		var templateData = {
+			viewName: pageConfig.viewName,
+			viewDescription: pageConfig.viewDescription
+		};
+		var template = Handlebars.compile(tmpl);
+		$('#leftPanel').html(template(templateData));
 
-        //render the filtering options
-        renderFilters();
-    });
+		//render the filtering options
+		renderFilters();
+	});
 
 });

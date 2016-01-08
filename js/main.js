@@ -10,13 +10,13 @@
 var app = app || {};
 
 //look up the user. since this is a static demo site, we use a configuration file instead of a database
-app.lookupUser = function(userName,pass, callback) {
-	$.getJSON('./config/config.json', function(data){
+app.lookupUser = function(userName, pass, callback) {
+	$.getJSON('./config/config.json', function(data) {
 		var user = data.users[userName];
-		if(typeof user === 'undefined'){
+		if (typeof user === 'undefined') {
 			return callback('user does not exist');
 		}
-		if(user.password !== pass){
+		if (user.password !== pass) {
 			return callback('incorrect password');
 		}
 		return callback(null, user);
@@ -27,21 +27,21 @@ app.lookupUser = function(userName,pass, callback) {
 app.login = function(user, pass) {
 
 	//Lookup the user against the configuration file. This is an async function call so we need to pass a callback.
-	this.lookupUser(user, pass, function(err, data){
+	this.lookupUser(user, pass, function(err, data) {
 		//notify the user of errors (e.g. wrong username / pass)
-		if(err){
+		if (err) {
 			return alert(err);
 		}
 		//store the user info for the session 
 		sessionStorage.userRole = data.role;
-		sessionStorage.jrsConfig = data.jrsConfig;
+		sessionStorage.jrsConfig = JSON.stringify(data.jrsConfig);
 		sessionStorage.userName = user;
 		sessionStorage.loggedIn = true;
 
-		//go to the post authentication page
-		window.location = "./admin.html";
+		//refresh the page
+		window.location = window.location.href;
 	});
-	
+
 
 };
 

@@ -1,3 +1,4 @@
+//define page and configuration data
 var pageConfig = {
 	masterReport: {
 		uri: '/public/Samples/FreshDelivery_Demo/HealthyChoiceProducts',
@@ -19,6 +20,7 @@ $.getJSON('./config/config.json', function(data) {
 	});
 });
 
+//init page and authenticate with JRS
 function initPage(jrsConfig) {
 	visualize({
 		auth: jrsConfig.auth
@@ -27,6 +29,7 @@ function initPage(jrsConfig) {
 	});
 }
 
+//load the dashboard
 function loadDashboard(v) {
 	window.masterReport = v.report({
 		resource: pageConfig.masterReport.uri,
