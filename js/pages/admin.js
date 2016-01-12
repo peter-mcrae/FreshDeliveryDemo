@@ -193,12 +193,6 @@ function handleError(e) {
 
 $(function() {
 
-	//attach a listener for updating the filters
-	$("button").on('click', function() {
-		$("button").prop("disabled", true);
-		updateFilters(window.dashboard);
-	});
-
 	//render the left side bar 
 	$.get('./partials/admin-left-panel.html', function(tmpl) {
 		var templateData = {
@@ -210,6 +204,13 @@ $(function() {
 
 		//render the filtering options
 		renderFilters();
+
+        //attach a listener for updating the filters
+        $("button").on('click', function() {
+            console.log('eter');
+            $("button").prop("disabled", true);
+            updateFilters(window.dashboard);
+        });
 	});
 
 });
