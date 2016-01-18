@@ -39,7 +39,7 @@ app.login = function(user, pass) {
 		sessionStorage.loggedIn = true;
 
 		//refresh the page
-		window.location = window.location.href;
+		window.location = window.destURL || window.location.href;
 	});
 
 
@@ -74,9 +74,9 @@ $(function() {
 	});
 
 	//handle login clicks and modals
-	$(document).on('click', "#login", function() {
+	$(document).on('click', "#login", function(e) {
 		console.log('login click');
-		event.preventDefault();
+		e.preventDefault();
 		//fire the modal 
 		$.get('./partials/loginModal.html', function(template) {
 			$("#loginModal").html(template);
@@ -92,13 +92,26 @@ $(function() {
 	});
 
 	//handle login form submit
-	$(document).on('submit', "#loginForm", function(event) {
+	$(document).on('submit', "#loginForm", function(e) {
 		//app.validate();
-		event.preventDefault();
+		e.preventDefault();
 		var data = $("#loginForm :input").serializeArray();
 		var user = data[0].value,
 			pass = data[1].value;
 		app.login(user, pass);
 
 	});
+
+	//handle additional login clicks
+	$('a[href="#login"').on('click', function(e){
+		e.preventDefault();
+		window.destURL = $(this).attr('data-target');
+		//fire the modal 
+		$.get('./partials/loginModal.html', function(template) {
+			$("#loginModal").html(template);
+			$("#myModal").modal();
+		});
+
+	});
+
 });
